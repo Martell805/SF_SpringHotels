@@ -1,0 +1,58 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: booking-service
+  config:
+    import: classpath:sfhotels-common.yml
+  datasource:
+    url: jdbc:h2:mem:bookings;DB_CLOSE_DELAY=-1;LOCK_TIMEOUT=5000
+    username: sa
+    password:
+  cloud:
+    loadbalancer:
+      cache:
+        enabled: false
+
+app:
+  security:
+    public-paths:
+      - /api/user/register
+      - /api/user/auth
+  demo-data:
+    enabled: true
+  booking:
+    auto-select-attempts: 3
+    pending-timeout: PT2M
+    reaper-interval: PT30S
+  hotel-client:
+    base-url: http://hotel-service
+    connect-timeout: 1s
+    read-timeout: 3s
+
+resilience4j:
+  retry:
+    instances:
+      hotel:
+        max-attempts: 3
+        wait-duration: 300ms
+        enable-exponential-backoff: true
+        exponential-backoff-multiplier: 2
+        retry-exceptions:
+          - org.springframework.web.client.ResourceAccessException
+          - org.springframework.web.client.HttpServerErrorException
+        ignore-exceptions:
+          - com.sfhotels.common.error.ApiException
+  circuitbreaker:
+    instances:
+      hotel:
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10s
+        permitted-number-of-calls-in-half-open-state: 2
+        automatic-transition-from-open-to-half-open-enabled: true
+        ignore-exceptions:
+          - com.sfhotels.common.error.ApiException

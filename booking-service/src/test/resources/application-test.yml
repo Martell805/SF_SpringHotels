@@ -1,0 +1,18 @@
+app:
+  demo-data:
+    enabled: false
+  booking:
+    reaper-interval: PT1H
+  hotel-client:
+    connect-timeout: 500ms
+    read-timeout: 500ms
+
+eureka:
+  client:
+    enabled: false
+
+resilience4j:
+  retry:
+    instances:
+      hotel:
+        wait-duration: 20ms

@@ -1,0 +1,7 @@
+app:
+  demo-data:
+    enabled: false
+
+eureka:
+  client:
+    enabled: false

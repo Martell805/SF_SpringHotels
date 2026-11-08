@@ -1,0 +1,16 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: hotel-service
+  config:
+    import: classpath:sfhotels-common.yml
+  datasource:
+    url: jdbc:h2:mem:hotels;DB_CLOSE_DELAY=-1;LOCK_TIMEOUT=5000
+    username: sa
+    password:
+
+app:
+  demo-data:
+    enabled: true
